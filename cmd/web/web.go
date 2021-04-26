@@ -17,12 +17,8 @@ func main() {
 
 	// parser API
 	http.HandleFunc("/v1/", route.HandlerTemplate)
-	// healthy check
-	http.HandleFunc("/",  func(w http.ResponseWriter, r *http.Request) {
-		 fmt.Fprint(w, "")
-	})
 	// static files
-	http.Handle("/", http.StripPrefix("/", http.FileServer(http.FS(templates.FS))))
+	http.Handle("/", route.Healthy("/", http.FileServer(http.FS(templates.FS))))
 
 	log.Printf("SERVER LISTEN ON: %v", host)
 	log.Fatal(http.ListenAndServe(host, nil))

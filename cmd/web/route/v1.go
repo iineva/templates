@@ -19,6 +19,7 @@ func checkIsSelfRequest(r *http.Request) bool {
 func HandlerTemplate(w http.ResponseWriter, r *http.Request) {
 
 	var requestURL *url.URL
+	var targetURL string
 	var p *parser.Parser
 	var err error
 
@@ -28,7 +29,12 @@ func HandlerTemplate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	requestURL, _ = url.ParseRequestURI(env.PublicURL(r) + r.URL.String())
-	p, err = parser.New(requestURL, r.URL.Query().Get("url"))
+	targetURL = r.URL.Query().Get("url")
+	if targetURL == "" {
+		err = errors.New("url = null")
+		goto error_block
+	}
+	p, err = parser.New(requestURL, targetURL)
 
 	if err != nil {
 		goto error_block
