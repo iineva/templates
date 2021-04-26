@@ -13,7 +13,7 @@ import (
 func main() {
 	log.Println("SERVER STARTING...")
 
-	host :=  fmt.Sprintf("%s:%s", env.Get("ADDRESS", "127.0.0.1"), env.Get("PORT", "8080"))
+	host :=  fmt.Sprintf("%s:%s", env.Get("ADDRESS", "0.0.0.0"), env.Get("PORT", "8080"))
 
 	// parser API
 	http.HandleFunc("/v1/", route.HandlerTemplate)
