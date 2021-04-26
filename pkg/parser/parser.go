@@ -62,10 +62,10 @@ func (p *Parser)init() error {
 		// load define
 		"loadDefine": p.funcLoadDefine,
 		// url encode/decode
-		"urlEncode": p.funcUrlEncode,
-		"urlDecode": p.funcUrlDecode,
+		"urlEncode": urlEncode,
+		"urlDecode": urlDecode,
 		// parse url
-		"parseUrl": p.funcParseUrl,
+		"fromUrl": fromUrl,
 		// get list value
 		"getList": p.funcGetList,
 		"addList": p.funcAddList,
@@ -75,10 +75,18 @@ func (p *Parser)init() error {
 		"setValue": p.FuncSetValue,
 		"delValue": p.FuncDelValue,
 		// query
-		"query": p.funcQuery,
+		"query": query,
 		// filter list with regex
-		"filterList": p.funcFilterList,
-  })
+		"filterList": filterList,
+
+		"toToml":        toTOML,
+		"toYaml":        toYAML,
+		"fromYaml":      fromYAML,
+		"fromYamlArray": fromYAMLArray,
+		"toJson":        toJSON,
+		"fromJson":      fromJSON,
+		"fromJsonArray": fromJSONArray,
+	})
 
 	// TODO: for test
 	//p.addDefine("test/surge.rule.tpl")

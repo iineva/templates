@@ -8,7 +8,7 @@ func (p *Parser)funcRequestURL() string {
 	return p.rootURL.String()
 }
 
-func (p *Parser)funcQuery(key string, query string) (string, error) {
+func query(key string, query string) (string, error) {
 	values, err := url.ParseQuery(query)
 	if err != nil {
 		return "", err

@@ -8,11 +8,11 @@ import (
 	"regexp"
 )
 
-func (p *Parser)funcUrlDecode(s string) (string, error) {
+func urlDecode(s string) (string, error) {
 	return url.QueryUnescape(s)
 }
 
-func (p *Parser)funcUrlEncode(s string) string {
+func urlEncode(s string) string {
 	return url.QueryEscape(s)
 }
 
@@ -32,7 +32,7 @@ type JavascriptURL struct {
 	Username string // "u"
 }
 
-func (p *Parser)funcParseUrl(s string) (*JavascriptURL, error) {
+func fromUrl(s string) (*JavascriptURL, error) {
 	u, err := url.Parse(s)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func (p *Parser)funcParseUrl(s string) (*JavascriptURL, error) {
 	return pu, nil
 }
 
-func (p *Parser)funcFilterList(regex string, list []interface{}) ([]interface{}, error) {
+func filterList(regex string, list []interface{}) ([]interface{}, error) {
 
 	newList := []interface{}{}
 
