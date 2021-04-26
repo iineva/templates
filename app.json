@@ -1,0 +1,16 @@
+{
+    "name": "templates",
+    "description": "Deploy templates on Heroku.",
+    "keywords": [
+        "templates"
+    ],
+    "env": {
+        "PUBLIC_UIL": {
+            "description": "Public URL",
+            "value": ""
+        }
+    },
+    "website": "https://github.com/iineva/templates",
+    "repository": "https://github.com/iineva/templates",
+    "stack": "container"
+}

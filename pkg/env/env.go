@@ -24,3 +24,11 @@ func PublicURL(r *http.Request) string {
 	}
 	return fmt.Sprintf("%s://%s", protocol, r.Host)
 }
+
+func Get(key string, def ...string) string {
+	v := os.Getenv(key)
+	if v == "" && len(def) != 0 {
+		v = def[0]
+	}
+	return v
+}

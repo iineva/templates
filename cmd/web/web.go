@@ -1,17 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
 	route "github.com/iineva/templates/cmd/web/route"
+	"github.com/iineva/templates/pkg/env"
 	"github.com/iineva/templates/templates"
 )
 
 func main() {
 	log.Println("SERVER STARTING...")
 
-	host := "0.0.0.0:8080"
+	host :=  fmt.Sprintf("%s:%s", env.Get("ADDRESS", "127.0.0.1"), env.Get("PORT", "8080"))
 
 	// parser API
 	http.HandleFunc("/v1/", route.HandlerTemplate)

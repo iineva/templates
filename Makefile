@@ -5,7 +5,6 @@ web::
 
 # build bin
 build:
-	go build cmd/cli/cli.go
 	go build cmd/web/web.go
 
 # show help
