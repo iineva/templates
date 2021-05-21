@@ -5,7 +5,7 @@
         "templates"
     ],
     "env": {
-        "PUBLIC_UIL": {
+        "PUBLIC_URL": {
             "description": "Public URL",
             "value": ""
         }
