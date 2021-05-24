@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
 	"strings"
 	"sync"
@@ -27,7 +28,44 @@ var (
 	clientID = random.RandString(8)
 )
 
-func (p *Parser)httpGet(targetURL string) (string, error) {
+func (p *Parser) loadFile(targetURL string) ([]byte, error) {
+	log.Printf("FILE GET: %v", targetURL)
+
+	u, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	d, err := os.ReadFile(u.Path)
+	if err != nil {
+		return nil, err
+	}
+	return d, nil
+}
+
+func (p *Parser) loadHttp(targetURL string) ([]byte, error) {
+	log.Printf("HTTP GET: %v", targetURL)
+
+	req, _ := http.NewRequest("GET", targetURL, nil)
+	req.Header.Add("user-agent", fmt.Sprintf("templates/1.0 (id %s)", clientID))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("http status code: " + resp.Status)
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (p *Parser) httpGet(targetURL string) (string, error) {
 	// load cache
 	if c, ok := cacheMap.Load(targetURL); ok {
 		ca := c.(cache)
@@ -39,22 +77,19 @@ func (p *Parser)httpGet(targetURL string) (string, error) {
 	// delete cache
 	cacheMap.Delete(targetURL)
 
-	log.Printf("HTTP GET: %v", targetURL)
-
-	req,_ := http.NewRequest("GET", targetURL, nil)
-	req.Header.Add("user-agent", fmt.Sprintf("templates/1.0 (id %s)", clientID) )
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", err
-	}
-	if resp.StatusCode != http.StatusOK {
-		return "", errors.New("http status code: " + resp.Status)
-	}
-
-  data, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
+	var data []byte
+	if strings.HasPrefix(targetURL, "file://") {
+		d, err := p.loadFile(targetURL)
+		if err != nil {
+			return "", err
+		}
+		data = d
+	} else if strings.HasPrefix(targetURL, "http") {
+		d, err := p.loadHttp(targetURL)
+		if err != nil {
+			return "", err
+		}
+		data = d
 	}
 
 	// cache
@@ -66,13 +101,13 @@ func (p *Parser)httpGet(targetURL string) (string, error) {
 	return string(data), nil
 }
 
-func (p *Parser)getTargetURL() (*url.URL, error) {
+func (p *Parser) getTargetURL() (*url.URL, error) {
 	targetURL, err := url.Parse(p.targetURL)
 	if err != nil {
 		return nil, err
 	}
-	
-	if strings.HasPrefix(targetURL.Scheme, "http") {
+
+	if targetURL.Scheme != "" {
 		return targetURL, nil
 	}
 
@@ -96,7 +131,7 @@ func (p *Parser)getTargetURL() (*url.URL, error) {
 	return targetURL, nil
 }
 
-func (p *Parser)getAbsoluteURL(u string) (*url.URL, error) {
+func (p *Parser) getAbsoluteURL(u string) (*url.URL, error) {
 	absoluteURL, err := url.Parse(u)
 	if err != nil {
 		return nil, err
